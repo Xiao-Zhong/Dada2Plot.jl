@@ -1,3 +1,7 @@
+using DataFrames, CSV
+using RCall
+#using StatsBase
+
 ##read dada2 output files, sample table
 function input2df(asv_file, taxa_file, sample_file)
     asv = CSV.File(asv_file) |> DataFrame;
@@ -8,44 +12,39 @@ function input2df(asv_file, taxa_file, sample_file)
     return asv, taxa, sample
 end
 
-##merge these tables above to be a metadata table
+##merge these table above to be a metadata table
 function df_merger(asv, taxa, sample)
     asv_taxa = vcat(asv, taxa)
     new_asv_id = ["ASV-$(i-1)" for i in 2:ncol(asv_taxa)]
     rename!(asv_taxa, names(asv_taxa)[2:end] .=> new_asv_id)
     leftjoin!(asv_taxa, sample, on = "Column1" => "Sample Name")
-    #remove taxa rows or the rows with "missing" in the last few columns
+    #unique(asv_taxa.Treatment)
+    #remove taxa rows or with "missing" in the last few columns
     df_taxa = filter(:Treatment => ismissing, asv_taxa)
+    #extract the rows with a treatment targeted.
     filter!(:Treatment => !ismissing, asv_taxa)
+    #rename!(asv_taxa, Dict(:Column1 => "Sample"))
     return asv_taxa, df_taxa
 end
 
-##filter out ASV with few read support and existing in few samples
-function asv_filter(asv, treatment, reads_cutoff, samples_cutoff)
+##filter ASV with few read support and existing in few samples
+function asv_filter(asv, treatment)
     filter!(:Treatment => x -> x ∈ treatment, asv)
     #CSV.write("asv.csv", asv)
     group_label = length(treatment) > 1 ? "Treatment" : "Column1"
-    #samples_c = length(treatment) > samples_cutoff ? 2 : 1 
+    samples_cutoff = length(treatment) > 1 ? 2 : 1
     println("groupby: $group_label")
-    #filter ASVs within a treatment
+
+    ##split-apply-combine: filter ASVs within a treatment
     gdfs = groupby(asv, "$(group_label)")
     group_ordered = []; gdfs_filter = []
     for gdf in gdfs
         push!(group_ordered, unique(gdf[:, "$(group_label)"]))
         #println("before\t", size(gdf))
-        #to keep the process going with the warning below even if there're fewer samples than required.
-        samples_c = 2
-        if nrow(gdf) >= samples_cutoff
-            samples_c = samples_cutoff
-        else
-            samples_c = nrow(gdf)
-            println("Warning: fewer samples than defined under a treatment $(keys(gdf))!")
-        end
-
         select_c = [1,]
         for n in 2:ncol(gdf)-3
-            c = (gdf[:, n] .> reads_cutoff ) |> count # more than 'reads_cutoff' reads per sample
-            (c >= samples_c) && push!(select_c, n) # 'samples_c' samples at least per treatment if there're many rows still
+            c = (gdf[:, n] .> 5 ) |> count # more than 5 reads per sample, two samples at least per treatment
+            (c >= samples_cutoff) && push!(select_c, n)
         end
         gdf = select(gdf, select_c)
         #println("after\t", size(gdf))
@@ -56,17 +55,22 @@ function asv_filter(asv, treatment, reads_cutoff, samples_cutoff)
 end
 
 ##extract good ASV based on any taxonomy classifcation and term
-function asv_taxa_extract(asv_in, taxa_in, sample_in, treatment, reads_cutoff, samples_cutoff, rank, term)
+function asv_taxa_extract(asv_in, taxa_in, sample_in, treatment)
     (asv_taxa, df_taxa) = df_merger(asv_in, taxa_in, sample_in)
+    #vscodedisplay(df_taxa)
     #CSV.write("taxa.csv", df_taxa)
-    (asv_filter_dfs, groups) = asv_filter(asv_taxa, treatment, reads_cutoff, samples_cutoff)
+
+    (asv_filter_dfs, groups) = asv_filter(asv_taxa, treatment)
     println("#Groups:\n", groups)
     println("#Number\tASVs")
+    #vscodedisplay(asv_filter_dfs[1])
     #CSV.write("asv_filter.csv", asv_filter_dfs[1])
+
     gdfs_filter_term = [vcat(gdf, df_taxa, cols=:intersect) for gdf in asv_filter_dfs]
-    # CSV.write("BSF10_ASVs-taxa_Immuno.csv", gdfs_filter_term[2])
-    # CSV.write("BSF30_ASVs-taxa_Immuno.csv", gdfs_filter_term[3])
-    # CSV.write("FM_control_ASVs-taxa_Immuno.csv", gdfs_filter_term[1])
+    #vscodedisplay(gdfs_filter_term[1])
+    CSV.write("BSF10_ASVs-taxa_Immuno.csv", gdfs_filter_term[2])
+    CSV.write("BSF30_ASVs-taxa_Immuno.csv", gdfs_filter_term[3])
+    CSV.write("FM_control_ASVs-taxa_Immuno.csv", gdfs_filter_term[1])
 
     ## to get the index of one rank
     ranks = ["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"]
@@ -90,6 +94,7 @@ function asv_taxa_extract(asv_in, taxa_in, sample_in, treatment, reads_cutoff, s
         push!(asv_list, asv_detected)
         #push!(asv_list_c, asv_detected_c)
     end
+    #asv_list
     return asv_list, groups
 end
 
@@ -112,4 +117,32 @@ function venn_plot(asv, category, category_label_size, output_file)
     ggsave($output_file)
     #dev.off()
     """
+end
+
+## to check ASV at one taxonomy level and with a term
+rank = "Kingdom"
+term = "Bacteria"
+
+## input files
+asv_in_file = "test/dada2_asv_Immuno_8.csv"
+taxa_in_file = "test/dada2_taxa_names_Immuno_8.csv"
+sample_in_file =  "test/samples2_Immuno8_v3.csv"
+## run functions
+(asv_in, taxa_in, sample_in) = input2df(asv_in_file, taxa_in_file, sample_in_file)
+
+#treatment = ["FM control", "BSF 10", "BSF 30"]
+treatment = ["FM control + Immuno", "BSF 10 + Immuno", "BSF 30 + Immuno"]
+#treatment = ["FM control"]
+#treatment = ["BSF 10"]
+#treatment = ["BSF 30"]
+#treatment = ["FM control + Immuno"]
+#treatment = ["BSF 10 + Immuno"]
+#treatment = ["BSF 30 + Immuno"]
+
+(asv_p, category_p) = asv_taxa_extract(asv_in, taxa_in, sample_in, treatment);
+
+if length(asv_p) >= 2
+    venn_plot(asv_p, category_p, 3, "BSF30_Immuno-samples-only.pdf")
+else
+    println("Cannot find overlapping ASV between any two groups!")
 end

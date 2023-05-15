@@ -1,0 +1,54 @@
+Sample Name,Trial,Treatment,Amplification
+neg-1,Control-GWA,neg,succeeded
+neg-2,Control-GWA,neg,succeeded
+neg-4,Control-GWA,neg,succeeded
+pos-1,Control-GWA,pos,succeeded
+pos-2,Control-GWA,pos,succeeded
+FRDC-147,Immuno 8,FM control + Immuno,succeeded
+FRDC-148,Immuno 8,FM control + Immuno,succeeded
+FRDC-149,Immuno 8,BSF 10,succeeded
+FRDC-150,Immuno 8,BSF 10,succeeded
+FRDC-151,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-152,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-153,Immuno 8,BSF 30,succeeded
+FRDC-154,Immuno 8,BSF 30,succeeded
+FRDC-159,Immuno 8,FM control ,succeeded
+FRDC-160,Immuno 8,FM control + Immuno,succeeded
+FRDC-161,Immuno 8,FM control + Immuno,succeeded
+FRDC-162,Immuno 8,FM control + Immuno,succeeded
+FRDC-163,Immuno 8,BSF 10,succeeded
+FRDC-165,Immuno 8,BSF 10,succeeded
+FRDC-166,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-167,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-168,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-170,Immuno 8,BSF 30,succeeded
+FRDC-171,Immuno 8,BSF 30,succeeded
+FRDC-174,Immuno 8,BSF 30 + Immuno,succeeded
+FRDC-175,Immuno 8,FM control ,succeeded
+FRDC-176,Immuno 8,FM control ,succeeded
+FRDC-178,Immuno 8,FM control + Immuno,succeeded
+FRDC-179,Immuno 8,FM control + Immuno,succeeded
+FRDC-181,Immuno 8,BSF 10,succeeded
+FRDC-182,Immuno 8,BSF 10,succeeded
+FRDC-183,Immuno 8,BSF 10,succeeded
+FRDC-184,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-185,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-186,Immuno 8,BSF 10 + Immuno,succeeded
+FRDC-187,Immuno 8,BSF 30,succeeded
+FRDC-188,Immuno 8,BSF 30,succeeded
+FRDC-189,Immuno 8,BSF 30,succeeded
+FRDC-190,Immuno 8,BSF 30 + Immuno,succeeded
+FRDC-191,Immuno 8,BSF 30 + Immuno,succeeded
+FRDC-145,Immuno 8,FM control ,Failed
+FRDC-146,Immuno 8,FM control ,Failed
+FRDC-155,Immuno 8,BSF 30 + Immuno,Failed
+FRDC-156,Immuno 8,BSF 30 + Immuno,Failed
+FRDC-157,Immuno 8,FM control ,Failed
+FRDC-158,Immuno 8,FM control ,Failed
+FRDC-164,Immuno 8,BSF 10,Failed
+FRDC-169,Immuno 8,BSF 30,Failed
+FRDC-172,Immuno 8,BSF 30 + Immuno,Failed
+FRDC-173,Immuno 8,BSF 30 + Immuno,Failed
+FRDC-177,Immuno 8,FM control ,Failed
+FRDC-180,Immuno 8,FM control + Immuno,Failed
+FRDC-192,Immuno 8,BSF 30 + Immuno,Failed
