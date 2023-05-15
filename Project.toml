@@ -1,7 +1,7 @@
 name = "Dada2Plot"
 uuid = "5bd0f725-b0fb-4f07-b8c1-69a3c87fd37e"
 authors = ["Xiao Zhong"]
-version = "1.0.0-DEV"
+version = "0.1.0-DEV"
 
 [compat]
 julia = "1"
