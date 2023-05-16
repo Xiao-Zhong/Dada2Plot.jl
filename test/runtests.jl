@@ -17,4 +17,4 @@ sample_in_file =  "samples2_Immuno8_v3.csv"
 treatment = ["BSF 10 + Immuno", "BSF 30 + Immuno"]
 (asv_p, category_p) = asv_taxa_extract(asv_in, taxa_in, sample_in, treatment, 5, 2, "Kingdom", "Bacteria");
 ##plot
-venn_plot(asv_p, category_p, 3)
+venn_plot(asv_p, category_p, 3, "venn.pdf")

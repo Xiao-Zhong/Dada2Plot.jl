@@ -93,7 +93,7 @@ function asv_taxa_extract(asv_in, taxa_in, sample_in, treatment, reads_cutoff, s
     return asv_list, groups
 end
 
-function venn_plot(asv, category, category_label_size)
+function venn_plot(asv, category, category_label_size, output_file)
     #skip a single ASV group
     length(asv) < 2 && return "Cannot find overlapping ASV between any two groups!"
     ##plot veen diagram using R
@@ -111,6 +111,6 @@ function venn_plot(asv, category, category_label_size)
     ) + 
     ggplot2::scale_fill_gradient(low="white",high = "red") +
     scale_x_continuous(expand = expansion(mult = c(.11)))
-    #ggsave($output_file)
+    ggsave($output_file)
     """
 end
