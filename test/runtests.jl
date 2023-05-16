@@ -9,9 +9,9 @@ using Test
 # end
 
 ##start from input CSV files
-asv_in_file = "./test/dada2_asv_Immuno_8.csv"
-taxa_in_file = "./test/dada2_taxa_names_Immuno_8.csv"
-sample_in_file =  "./test/samples2_Immuno8_v3.csv"
+asv_in_file = "dada2_asv_Immuno_8.csv"
+taxa_in_file = "dada2_taxa_names_Immuno_8.csv"
+sample_in_file =  "samples2_Immuno8_v3.csv"
 (asv_in, taxa_in, sample_in) = input2df(asv_in_file, taxa_in_file, sample_in_file)
 ##find ASV overlapping
 treatment = ["BSF 10 + Immuno", "BSF 30 + Immuno"]
