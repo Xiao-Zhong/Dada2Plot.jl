@@ -98,7 +98,7 @@ function venn_plot(asv, category, category_label_size)
     length(asv) < 2 && return "Cannot find overlapping ASV between any two groups!"
     ##plot veen diagram using R
     R"""
-    library(ggVennDiagram); library(ggplot2)
+    library(ggVennDiagram); #library(ggplot2)
 
     ggVennDiagram($asv, 
         label_alpha = 0, 
@@ -109,6 +109,7 @@ function venn_plot(asv, category, category_label_size)
     ) + 
     ggplot2::scale_fill_gradient(low="white",high = "red") +
     scale_x_continuous(expand = expansion(mult = c(.11)))
+
     #ggsave($output_file)
     """
 end
