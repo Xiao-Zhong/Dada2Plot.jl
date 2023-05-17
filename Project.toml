@@ -9,7 +9,7 @@ DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 RCall = "6f49c342-dc21-5d91-9882-a32aef131414"
 
 [compat]
-julia = "1"
+julia = "1.2"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
