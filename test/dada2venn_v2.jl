@@ -68,9 +68,9 @@ function asv_taxa_extract(asv_in, taxa_in, sample_in, treatment)
 
     gdfs_filter_term = [vcat(gdf, df_taxa, cols=:intersect) for gdf in asv_filter_dfs]
     #vscodedisplay(gdfs_filter_term[1])
-    CSV.write("BSF10_ASVs-taxa_Immuno.csv", gdfs_filter_term[2])
-    CSV.write("BSF30_ASVs-taxa_Immuno.csv", gdfs_filter_term[3])
-    CSV.write("FM_control_ASVs-taxa_Immuno.csv", gdfs_filter_term[1])
+    #CSV.write("BSF10_ASVs-taxa_Immuno.csv", gdfs_filter_term[2])
+    #CSV.write("BSF30_ASVs-taxa_Immuno.csv", gdfs_filter_term[3])
+    #CSV.write("FM_control_ASVs-taxa_Immuno.csv", gdfs_filter_term[1])
 
     ## to get the index of one rank
     ranks = ["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"]
@@ -98,7 +98,7 @@ function asv_taxa_extract(asv_in, taxa_in, sample_in, treatment)
     return asv_list, groups
 end
 
-function venn_plot(asv, category, category_label_size, output_file)
+function venn_plot(asv, category, category_label_size, output_file, title_name)
     ##plot veen diagram using R
     R"""
     library(ggVennDiagram); library(ggplot2)
@@ -112,7 +112,8 @@ function venn_plot(asv, category, category_label_size, output_file)
         set_size = $category_label_size,
     ) + 
     ggplot2::scale_fill_gradient(low="white",high = "red") +
-    scale_x_continuous(expand = expansion(mult = c(.11)))
+    scale_x_continuous(expand = expansion(mult = c(.11))) +
+    labs(title = $title_name)
 
     ggsave($output_file)
     #dev.off()
@@ -124,9 +125,9 @@ rank = "Kingdom"
 term = "Bacteria"
 
 ## input files
-asv_in_file = "test/dada2_asv_Immuno_8.csv"
-taxa_in_file = "test/dada2_taxa_names_Immuno_8.csv"
-sample_in_file =  "test/samples2_Immuno8_v3.csv"
+asv_in_file = "dada2_asv_Immuno_8.csv"
+taxa_in_file = "dada2_taxa_names_Immuno_8.csv"
+sample_in_file =  "samples2_Immuno8_v3.csv"
 ## run functions
 (asv_in, taxa_in, sample_in) = input2df(asv_in_file, taxa_in_file, sample_in_file)
 
@@ -138,11 +139,13 @@ treatment = ["FM control + Immuno", "BSF 10 + Immuno", "BSF 30 + Immuno"]
 #treatment = ["FM control + Immuno"]
 #treatment = ["BSF 10 + Immuno"]
 #treatment = ["BSF 30 + Immuno"]
-
 (asv_p, category_p) = asv_taxa_extract(asv_in, taxa_in, sample_in, treatment);
 
-if length(asv_p) >= 2
-    venn_plot(asv_p, category_p, 3, "BSF30_Immuno-samples-only.pdf")
+if 2 <= length(asv_p) <= 7
+    venn_plot(asv_p, category_p, 3, "Treatments-venn.pdf", "Treatments")
+elseif length(asv_p) > 7
+    venn_plot(asv_p[1:7], category_p[1:7], 3, "Treatments-venn.pdf", "Treatments")
+    println("Warning: ggVennDiagram only supports 2-7 dimension Venn diagram")
 else
     println("Cannot find overlapping ASV between any two groups!")
 end
